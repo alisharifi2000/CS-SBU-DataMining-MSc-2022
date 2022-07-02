@@ -55,7 +55,8 @@ def split_data(data):
     """
     Given a np.ndarray with the shape (n, k), split the array into two lists with the shapes (n, k-1) and (n, 1) where the second array only consists of the last element of each row. (Aka the class labels)
     """
-    return np.array_split(np.asarray(data), len(data[0]) - 1, axis=1)
+    data = np.asarray(data)
+    return data[:, :-1], data[:, -1]
 
 
 def reconstruct_data(x, y):

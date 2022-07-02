@@ -1,6 +1,6 @@
 from utils import *
 from models import *
-from imblearn.over_sampling import RandomOverSampler
+from imblearn.over_sampling import RandomOverSampler, SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 
 
@@ -28,11 +28,16 @@ def handle_oversampling(x, y):
     )  # Return reconstructed, un-split data to send back
 
 
-def handle_smote(x, y, majority_class, minority_class):
+def handle_smote(x, y):
     """
     Fix data imbalance via the SMOTE method.
     """
-    return "Hello!"
+    # Create oversampling object w/ SMOTE
+    smote = SMOTE(k_neighbors=3)  # A low number so it works with (very) small datasets
+    x_smote, y_smote = smote.fit_resample(x, y)  # Resample
+    return reconstruct_data(
+        x_smote, y_smote
+    )  # Return reconstructed, un-split data to send back
 
 
 def minority_class_handle(data, config):
@@ -43,7 +48,6 @@ def minority_class_handle(data, config):
     Output: The resampled data in the form of a list with the shape (n, k), ready to be sent back to the requester.
     """
 
-    minority_class, majority_class = config.minority_class, config.majority_class
     x, y = split_data(data)
 
     # NO NEED TO PASS MAJORITY/MINORITY CLASS.
@@ -55,4 +59,4 @@ def minority_class_handle(data, config):
         return handle_oversampling(x, y)
 
     elif config.method is ImbalanceFixMethod.smote:
-        return handle_smote(x, y, majority_class, minority_class)
+        return handle_smote(x, y)
