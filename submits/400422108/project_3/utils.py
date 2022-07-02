@@ -12,6 +12,9 @@ timeformat = "%Y-%m-%dT%H:%M:%S"
 
 
 def string_to_datetime(date_string, is_jalali=False):
+    """
+        Convert string into datetime.datetime. Datetime strings are assumed to have the format: Year-Month-DayTHour:Minute:second
+    """
     time_format_string = timeformat
     if is_jalali:
         return JalaliDatetime.strptime(date_string, time_format_string).todate()
@@ -19,6 +22,9 @@ def string_to_datetime(date_string, is_jalali=False):
 
 
 def np_dt_to_dt(dt64, is_jalali=False):
+    """
+        Convert numpy.datetime64 to datetime.datetime
+    """
     seconds_since_epoch = (dt64 - unix_epoch) / one_second
     fixed_dt = datetime.utcfromtimestamp(seconds_since_epoch)
     if is_jalali:
@@ -27,9 +33,19 @@ def np_dt_to_dt(dt64, is_jalali=False):
 
 
 def datetime_to_string(date_string):
+    """
+        Convert datetime into string with format: Year-Month-DayTHour:Minute:second
+    """
     return date_string.strftime(timeformat)
 
 
 def calculate_z_score(data):
+    """
+        Calculate z-score.
+        Input:
+            data: np.ndarray-like data type containing numerical values
+        Output:
+            Corresponding z-scores for every element.
+    """
     z_score_array = stats.zscore(data)
     return z_score_array

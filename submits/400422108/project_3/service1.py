@@ -3,6 +3,14 @@ from models import *
 
 
 def preprocess_data(data, is_jalali=False):
+    """
+    Pre-processes np.ndarray-like data into a properly indexed DataFrame with formatted dates.
+    Input:
+        data: np.ndarray-like with size n*2. Each row has two values in the form of [date, value]
+        is_jalali: What locale the dates are in
+    Output:
+        Formatted pd.DataFrame where the date column is set to the index and the locale is set to miladi/Gregorian. Rows are sorted by date (ascending)
+    """
     fixed_data = [[string_to_datetime(entry[0], is_jalali), entry[1]] for entry in data]
     df = pd.DataFrame(fixed_data, columns=["date", "value"])
     df.sort_values(by="date", ascending=True, inplace=True)
@@ -11,6 +19,12 @@ def preprocess_data(data, is_jalali=False):
 
 
 def interpolate_data(data, config):
+    """
+    Input:
+        data: The np.ndarray-like data we'll be performing operations on
+        config: The configuration as specified in ./models, denoting interpolation interval, interpolation type, etc.
+    Output: The interpolated data in the form of a list with the shape (n, 2), with each row being [datetime_string: str, value: Number], ready to be sent back to the requester.
+    """
     is_jalali = config.type is DateFormatEnum.shamsi
     df = preprocess_data(data, is_jalali)
 
